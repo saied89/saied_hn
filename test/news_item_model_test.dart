@@ -1,11 +1,9 @@
-import 'dart:convert';
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:saied_hn/models/news_item.dart';
 
 void main() {
   test("news item model can parse json", () {
-    final String json = """{
+    const json = """{
   "by": "dhouston",
   "descendants": 71,
   "id": 8863,
