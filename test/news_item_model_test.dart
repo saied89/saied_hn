@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:http/http.dart' as http;
 import 'package:saied_hn/models/news_item.dart';
 
 void main() {
@@ -50,10 +51,25 @@ void main() {
 }""";
 
     final NewsItem newsItem = NewsItem.fromJson(json);
-    
-    expect(newsItem.by, 'dhouston');
-    
-    expect(newsItem.descendants, 71);
 
+    expect(newsItem.by, 'dhouston');
+
+    expect(newsItem.descendants, 71);
+  });
+
+  test("parses item.json over a network", () async {
+    final url = 'https://hacker-news.firebaseio.com/v0/beststories.json';
+    final res = await http.get(url);
+    if (res.statusCode == 200) {
+      final idList = parseStoryIds(res.body);
+      if (idList.isNotEmpty) {
+        final storyUrl =
+            'https://hacker-news.firebaseio.com/v0/item/${idList.first}.json';
+        final storyRes = await http.get(storyUrl);
+        if (storyRes.statusCode == 200) {
+          expect(NewsItem.fromJson(storyRes.body), isNotNull);
+        }
+      }
+    }
   });
 }

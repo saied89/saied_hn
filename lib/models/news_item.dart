@@ -43,3 +43,9 @@ abstract class NewsItem implements Built<NewsItem, NewsItemBuilder> {
 
   static Serializer<NewsItem> get serializer => _$newsItemSerializer;
 }
+
+List<int> parseStoryIds(String jsonStr) {
+  var parsed = jsonDecode(jsonStr);
+  var listOfIds = List<int>.from(parsed);
+  return listOfIds;
+}
