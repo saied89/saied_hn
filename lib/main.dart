@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:saied_hn/models/news_item.dart';
 
 void main() => runApp(MyApp());
 
@@ -25,13 +26,22 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  List<int> _ids = [
+    17392995,
+    17397852,
+    17395342,
+    17385291,
+    17387851,
+    17395675,
+    17387438,
+    17393560,
+    17391971,
+    17392455,
+  ];
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
+//  Future<NewsItem> _getNewItem(int id) {
+//
+//  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,24 +49,10 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.display1,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
+      body: ListView(
+        children: _ids.map((id) {
+          return Text(id.toString());
+        }).toList(),
       ), );
   }
 }

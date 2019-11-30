@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
+import 'package:saied_hn/models/NetworkHelper.dart';
 import 'package:saied_hn/models/news_item.dart';
 
 void main() {
@@ -71,5 +72,10 @@ void main() {
         }
       }
     }
+  });
+
+  test("items are successfully fetched by getNewsItem", () async {
+    final res = await getNewsItem(8863);
+    expect(res.by, "dhouston");
   });
 }
