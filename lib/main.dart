@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:saied_hn/models/NetworkHelper.dart';
 import 'package:saied_hn/models/news_item.dart';
 
 void main() => runApp(MyApp());
@@ -27,16 +28,17 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   List<int> _ids = [
-    17392995,
-    17397852,
-    17395342,
-    17385291,
-    17387851,
-    17395675,
-    17387438,
-    17393560,
-    17391971,
-    17392455,
+    21655958,
+    21667355,
+    21665125,
+    21649495,
+    21647038,
+    21660718,
+    21647398,
+    21652888,
+    21651610,
+    21657930,
+    21648633
   ];
 
 //  Future<NewsItem> _getNewItem(int id) {
@@ -51,8 +53,24 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: ListView(
         children: _ids.map((id) {
-          return Text(id.toString());
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: FutureBuilder(
+              future: getNewsItem(id),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done)
+                  try {
+                    return Text((snapshot.data as NewsItem).title);
+                  } catch (err) {
+                    return Text(err.toString(), style: TextStyle(color: Colors.red),);
+                  }
+                else
+                  return Center(child: CircularProgressIndicator());
+              },
+            ),
+          );
         }).toList(),
-      ), );
+      ),
+    );
   }
 }
