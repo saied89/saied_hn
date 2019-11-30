@@ -60,7 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done)
                   try {
-                    return Text((snapshot.data as NewsItem).title);
+                    return _buildItem(snapshot.data);
                   } catch (err) {
                     return Text(err.toString(), style: TextStyle(color: Colors.red),);
                   }
@@ -71,6 +71,21 @@ class _MyHomePageState extends State<MyHomePage> {
           );
         }).toList(),
       ),
+    );
+  }
+
+  Widget _buildItem(NewsItem item) {
+    return ExpansionTile(
+      title: Text(item.title),
+      children: <Widget>[
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            Icon(Icons.launch),
+            Text(item.type),
+          ],
+        )
+      ],
     );
   }
 }
