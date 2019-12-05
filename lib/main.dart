@@ -1,10 +1,17 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
-import 'package:saied_hn/models/NetworkHelper.dart';
+import 'package:saied_hn/hn_bloc.dart';
 import 'package:saied_hn/models/news_item.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  final hnBloc = HackerNewsBloc();
+  runApp(MyApp(bloc: hnBloc));
+}
 
 class MyApp extends StatelessWidget {
+  final HackerNewsBloc bloc;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -12,13 +19,20 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(
+        title: 'Flutter Demo Home Page',
+        bloc: bloc,
+      ),
     );
   }
+
+  MyApp({this.bloc});
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  final HackerNewsBloc bloc;
+
+  MyHomePage({Key key, this.title, this.bloc}) : super(key: key);
 
   final String title;
 
@@ -27,23 +41,15 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<int> _ids = [
-    21655958,
-    21667355,
-    21665125,
-    21649495,
-    21647038,
-    21660718,
-    21647398,
-    21652888,
-    21651610,
-    21657930,
-    21648633
-  ];
-
 //  Future<NewsItem> _getNewItem(int id) {
 //
 //  }
+
+  @override
+  void dispose() {
+    widget.bloc.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,25 +57,13 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: ListView(
-        children: _ids.map((id) {
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: FutureBuilder(
-              future: getNewsItem(id),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done)
-                  try {
-                    return _buildItem(snapshot.data);
-                  } catch (err) {
-                    return Text(err.toString(), style: TextStyle(color: Colors.red),);
-                  }
-                else
-                  return Center(child: CircularProgressIndicator());
-              },
-            ),
-          );
-        }).toList(),
+      body: StreamBuilder<UnmodifiableListView<NewsItem>>(
+        initialData: UnmodifiableListView([]),
+        stream: widget.bloc.articles,
+        builder: (context, snapshot) {
+          return ListView(children: snapshot.data.map(_buildItem).toList());
+        }
+        ,
       ),
     );
   }
