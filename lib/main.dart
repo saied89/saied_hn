@@ -45,6 +45,8 @@ class _MyHomePageState extends State<MyHomePage> {
 //
 //  }
 
+  var _currentTab = 0;
+
   @override
   void dispose() {
     widget.bloc.dispose();
@@ -61,11 +63,15 @@ class _MyHomePageState extends State<MyHomePage> {
         initialData: UnmodifiableListView([]),
         stream: widget.bloc.articles,
         builder: (context, snapshot) {
-          return ListView(children: snapshot.data.map(_buildItem).toList());
+          if(snapshot.connectionState == ConnectionState.done)
+            return ListView(children: snapshot.data.map(_buildItem).toList());
+          else if(snapshot.connectionState == ConnectionState.waiting)
+            return Center(child: CircularProgressIndicator());
+          else return Center(child: Text("Error: ${snapshot.error}", style: TextStyle(color: Colors.red),));
         },
       ),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 0,
+        currentIndex: _currentTab,
         items: [
           BottomNavigationBarItem(
               icon: Icon(Icons.trending_up), title: Text("Top Stories")),
@@ -77,6 +83,9 @@ class _MyHomePageState extends State<MyHomePage> {
             widget.bloc.storiesType.add(StoriesType.topStories);
           else
             widget.bloc.storiesType.add(StoriesType.newStories);
+          setState(() {
+            _currentTab = i;
+          });
         },
       ),
     );
